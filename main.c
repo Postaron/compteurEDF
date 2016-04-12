@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+
 #define F_CPU 16000000UL
 #define BAUD 1200
 #define BAUDRATE (((F_CPU / (BAUD * 16UL))) - 1)
@@ -15,20 +16,19 @@ volatile char data;
 
 void uart_init(void) {
 	// set baudrate to 1200bit/second
-	UBRRH |= (BAUDRATE >> 8);
-	UBRRL |= BAUDRATE;
-	UCSRC = 0b00100100; /*asynchronous mode enable, parité paire, 7-bit data
-	 1 bit de stop */
-	UCSRB |= (1 << RXEN); // autorisation de la réception de donnée
-	UCSRB |= (1 << RXCIE); // Interruption pour réception des infos
+	//The 0 is for the timer0
+	UBRR0H |= (BAUDRATE >> 8);
+	UBRR0L |= BAUDRATE;
+	UCSR0C = 0b00100100; /*asynchronous mode enable, parity even, 7-bit data
+	 1 stop bit */
+	UCSR0B |= (1 << RXEN0); // Enable RX
+	UCSR0B |= (1 << RXCIE0); // Enable interruption when RX buffer is full
 	sei();
-	// autorisation globale des interruptions
+	// Enable global interruption
 }
 
-ISR(USART_RXC_vect) {
-	while (!(UCSRA & (1 << RXC)))
-		; //wait until data is completely received
-	data = UDR; //puts the received data in the variable data
+ISR(USART_RX_vect) {
+
 }
 
 int main(void) {
