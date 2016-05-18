@@ -18,9 +18,8 @@ unsigned char flag;
 void uart_init(void);
 unsigned char uart_flagCheck(void);
 
-ISR(USART_RX_vect) { // interruption when start bit set to 0 (receive begin)
-	while(!(UCSR0A & (1 << RXC0))); //wait until RXC0 buffer is full
-	data = UDR0; // get the data
+ISR(USART_RX_vect) { // interruption when RX buffer is full
+	data = UDR0; // empty the buffer
 }
 
 int main(void) {
@@ -31,6 +30,7 @@ int main(void) {
 			flag = uart_flagCheck(); // flag to know if there transmission problem
 			switch (flag){
 			case 1 : // Frame error
+			
 				break;
 			case 2 : // Parity error
 				break;
