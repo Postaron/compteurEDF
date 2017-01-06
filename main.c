@@ -1,5 +1,4 @@
 #include <avr/io.h>
-#include <avr/interrupt.h>
 
 #define F_CPU 16000000UL
 #define BAUD 1200
@@ -35,7 +34,7 @@ void uart_init(void) {
 }
 
 //not finished yet : reboot µC (watchdog ?)
-void uart_flagCheck(void) {
+void uart_checkError(void) {
 	switch (~(0xE3 & UCSR0A)) { // 0xE1 = bits other than FE0 DOR0 and UPE0
 	case (1 << FE0):
 		break;
