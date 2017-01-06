@@ -17,10 +17,8 @@ int main(void) {
 
 	for (;;) {
 		char data = uart_getChar();
-		if (data != 0) { //if data is not empty
-			uart_checkError(); // reboot µC
-			decode(data);
-		}
+		uart_checkError(); //reboot µC
+		decode(data);
 	}
 
 	return 0;
@@ -38,18 +36,26 @@ void uart_init(void) {
 
 //not finished yet : reboot µC (watchdog ?)
 void uart_flagCheck(void) {
-	switch (UCSR0A) {
+	switch (~(0xE3 & UCSR0A)) { // 0xE1 = bits other than FE0 DOR0 and UPE0
 	case (1 << FE0):
 		break;
 	case (1 << DOR0):
 		break;
 	case (1 << UPE0):
 		break;
-	default:
+	case 0:
+		//no errors
+		break;
+	default: //multiple errors
 		break;
 	}
 }
-
+char uart_getChar() {
+	while ((UCSR0A & (1 << RXC0)) == 0)
+		//do nothing while receive not complete
+		;
+	return UDR0;
+}
 void decode(char data) {
 
 }
