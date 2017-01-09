@@ -3,9 +3,21 @@
 #define F_CPU 16000000UL
 #define BAUD 1200
 #define BAUDRATE (((F_CPU / (BAUD * 16UL))) - 1)
-#define START 0x01 //not the real one
-#define END 0x02 //same reason
+#define START 0x0A //the real one
+#define END 0x0D //same reason
+#define SPACE 0x20 //a space between the tag, data and checksum
 
+
+/*
+ * The protocol is like that :
+ * A start
+ * then a tag (4 to 8 character)
+ * a space
+ * one data (1 to 12 character)
+ * a space
+ * checksum
+ * end
+ */
 void uart_init(void);
 void uart_checkError(void);
 char uart_getChar(void);
@@ -26,8 +38,7 @@ int main(void) {
 void uart_init(void) {
 	// set baudrate to 1200bit/second
 	//The 0 is for the timer0
-	UBRR0H |= (BAUDRATE >> 8);
-	UBRR0L |= BAUDRATE;
+	UBRR0 |= BAUDRATE;
 	UCSR0C = 0b00100100; /*asynchronous mode enable, parity even, 7-bit data
 	 1 stop bit */
 	UCSR0B |= (1 << RXEN0); // Enable RX
@@ -35,7 +46,7 @@ void uart_init(void) {
 
 //not finished yet : reboot µC (watchdog ?)
 void uart_checkError(void) {
-	switch (~(0xE3 & UCSR0A)) { // 0xE1 = bits other than FE0 DOR0 and UPE0
+	switch (~(0xE3 & UCSR0A)) { // 0xE3 = bits other than FE0 DOR0 and UPE0
 	case (1 << FE0):
 		break;
 	case (1 << DOR0):
