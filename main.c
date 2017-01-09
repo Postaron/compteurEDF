@@ -39,8 +39,7 @@ void uart_init(void) {
 	// set baudrate to 1200bit/second
 	//The 0 is for the timer0
 	UBRR0 |= BAUDRATE;
-	UCSR0C = 0b00100100; /*asynchronous mode enable, parity even, 7-bit data
-	 1 stop bit */
+	UCSR0C = 0b00100100; /*asynchronous mode enable, parity even, 7-bit data, 1 stop bit */
 	UCSR0B |= (1 << RXEN0); // Enable RX
 }
 
