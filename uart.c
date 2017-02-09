@@ -5,6 +5,10 @@
  *      Author: postaron
  */
 #include "uart.h"
+#include "compteurCode.h"
+#define START 0x0A //the real one
+#define END 0x0D //same reason
+#define SPACE 0x20 //a space between the tag, data and checksum
 
 void uart_init(void) {
 	// set baudrate to 1200bit/second
@@ -37,5 +41,17 @@ char uart_getChar() {
 	return UDR0;
 }
 void decode(char data) {
+	switch (data) {
+		case START:
 
+			break;
+		case SPACE:
+
+			break;
+		case END:
+
+			break;
+		default:
+			break;
+	}
 }

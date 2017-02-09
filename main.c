@@ -2,9 +2,6 @@
 #include "uart.h"
 
 #define F_CPU 16000000UL
-#define START 0x0A //the real one
-#define END 0x0D //same reason
-#define SPACE 0x20 //a space between the tag, data and checksum
 
 
 /*
